@@ -6,6 +6,7 @@ import random
 def create_canvas(w_img, h_img, bboxs,  channels=3):
     canvas = np.zeros((h_img, w_img, channels), dtype=np.uint8)
     for bbox in bboxs:
+        print("[DEBUG] BBOX {} ".format(bbox))
         x, y, w, h = bbox
         cv2.rectangle(canvas, (x, y), (x+w, y+h), (255, 255, 255), -1)
     return canvas.astype(np.uint16)
@@ -23,9 +24,12 @@ def bbox_generator(w_img, h_img, cant, max_w_box=60, max_h_box=150, min_w_box=40
 
 
 def min_max_normalization(input_array):
-    temp = input_array / input_array.max()
-    temp = np.floor(temp * 255)
-    return temp.astype(np.uint8)
+    if input_array.max() > 0:
+        temp = input_array / input_array.max()
+        temp = np.floor(temp * 255)
+        return temp.astype(np.uint8)
+    else:
+        return input_array.astype(np.uint8)
 
 
 def heatmap_creator(background, bboxs_stack, alpha=0.55):
